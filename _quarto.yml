@@ -1,0 +1,44 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "eBird Workshops OCA II"
+  chapters:
+    - index.qmd
+    - ebird.qmd
+    - ebirdst.qmd
+  editor:
+    mode: source
+
+  page-footer:
+    left: "eBird Workshops OCA II"
+  site-url: https://ebird.github.io/ebird-workshop-oca/
+  repo-url: https://github.com/ebird/ebird-workshop-oca/
+  repo-branch: main
+  repo-actions: [edit, issue]
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    author-meta: "Matthew Strimas-Mackey, Tom Auer"
+
+knitr:
+  opts_chunk:
+    comment: "#>"
+    collapse: true
+    cache: false
+    warn: false
+    error: false
+    message: false
+    out.width: "\\textwidth"
+    fig.align: "center"
+    fig.show: "hold"
+    cache.path: "cache/"
+    R.options:
+      digits: 3
+      knitr.kable.NA: ""
+      dplyr.print_min: 6
+      dplyr.print_max: 6
