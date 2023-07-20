@@ -36,7 +36,7 @@ If you would prefer to directly download the exact dataset used in this workshop
 
 The previous step left us with two tab separated text files, one for the EBD (i.e. observation data) and one for the SED (i.e. checklist data). Start a new RStudio project and put the downloaded text files in the `data/` sub-directory of the project directory.
 
-The `auk` R package is specifically designed for working with eBird data. It contains the functions [`read_ebd()`](https://cornelllabofornithology.github.io/auk/reference/read_ebd.html) and [`read_sampling()`](https://cornelllabofornithology.github.io/auk/reference/read_ebd.html), designed to import the EBD and SED, respectively, into R. First let's import the checklist data (SED).
+The `auk` R package is specifically designed for working with eBird data. It includes the functions [`read_ebd()`](https://cornelllabofornithology.github.io/auk/reference/read_ebd.html) and [`read_sampling()`](https://cornelllabofornithology.github.io/auk/reference/read_ebd.html) for importing the EBD and SED, respectively, into R. First let's import the checklist data (SED).
 
 ```{r}
 #| label: ebird-import-sed
@@ -45,7 +45,6 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 library(sf)
-library(tmap)
 
 f_sed <- "data/ebd_BR-RS_fotfly_smp_relJun-2023_sampling.txt"
 checklists <- read_sampling(f_sed, unique = FALSE)
@@ -58,7 +57,7 @@ glimpse(checklists)
 Take some time to explore the variables in the checklist dataset. If you're unsure about any of the variables, consult the metadata document that came with the data download (`eBird_Basic_Dataset_Metadata_v1.14.pdf`).
 :::
 
-Next we'll import the observation data.
+Next, let's import the observation data.
 
 ```{r}
 #| label: ebird-import-ebd
@@ -73,7 +72,7 @@ glimpse(observations)
 Take some time to explore the variables in the observation dataset. Notice that the EBD duplicates many of the checklist-level variables from the SED.
 :::
 
-When we read the data into R you probably noticed we used `unique = FALSE` and `rollup = FALSE`. By default the read functions in `auk` perform two important pre-processing steps: **combining duplicate shared checklists** and **taxonomic rollup**. We intentionally turned off this functionality for the purposes of demonstration.
+When we read the data into R, we used `unique = FALSE` and `rollup = FALSE`. By default the read functions in `auk` perform two important pre-processing steps: **combining duplicate shared checklists** and **taxonomic rollup**. We intentionally turned off this functionality for the purposes of demonstration.
 
 ### Shared checklists {#sec-ebird-import-shared}
 
@@ -104,9 +103,22 @@ head(checklists_unique$checklist_id)
 tail(checklists_unique$checklist_id)
 ```
 
+::: callout-tip
+## Tip
+
+Curious when checklists and observers contributed to a shared checklist after it has been collapsed? The `sampling_event_identifier` and `observer_id` contain comma-separated lists of all checklists and observers that went into the shared checklists.
+
+```{r}
+#| label: ebird-import-shared-tip
+checklists_unique %>% 
+  filter(checklist_id == "G10019405") %>% 
+  select(checklist_id, group_identifier, sampling_event_identifier, observer_id)
+```
+:::
+
 ### Taxonomic rollup {#sec-ebird-import-rollup}
 
-eBird observations can be made at levels below species (e.g. subspecies) or above species (e.g. a bird that was identified as a duck, but the species could not be determined); however, for most uses we'll want observations at the species level. This is especially true if we want to produce detection/non-detection data from complete checklists because "complete" only applies to species.
+eBird observations can be made at levels below species (e.g. subspecies) or above species (e.g. a bird that was identified as a duck, but the species could not be determined); however, for most uses we'll want observations at the species level. This is especially true if we want to produce detection/non-detection data from complete checklists because "complete" only applies at the species level.
 
 ::: callout-tip
 ## Tip
@@ -122,15 +134,23 @@ observations_rollup <- auk_rollup(observations)
 # only one checklist is affected by this
 observations %>% 
   filter(sampling_event_identifier == "S99335111") %>% 
-  select(sampling_event_identifier, common_name, subspecies_common_name)
+  select(sampling_event_identifier, common_name, subspecies_common_name, 
+         observation_count)
 observations_rollup %>% 
   filter(sampling_event_identifier == "S99335111") %>% 
-  select(sampling_event_identifier, common_name)
+  select(sampling_event_identifier, common_name,
+         observation_count)
 ```
+
+::: callout-tip
+## Tip
+
+If multiple taxa on a single checklist roll up to the same species, `auk_rollup()` attempts to combine them intelligently. If each observation has a count, those counts are added together, but if any of the observations is missing a count (i.e. the count is "X") the combined observation is also assigned an "X".
+:::
 
 ## Generating detection/non-detection data {#sec-ebird-zf}
 
-Complete eBird checklists are extremely valuable because, for all species that weren't reported, we can infer counts of 0. This allows us to convert eBird from presence only data to detection/non-detection data, which allows for much more robust analyses. Note that we don't use the term presence/absence data here because a non-detection doesn't necessarily imply the species was absent, only that observer didn't detect and identify it.
+Complete eBird checklists are extremely valuable because, for all species that weren't reported, we can infer counts of 0. This allows us to convert eBird from presence only data to detection/non-detection data, which allows for much more robust analyses. Note that we don't use the term presence/absence data here because a non-detection doesn't necessarily imply the species was absent, only that the observer didn't detect and identify it.
 
 We refer to the process of producing detection/non-detection data as "zero-filling" the eBird data because we're filling in the missing zeros. We'll read the eBird data into R again, filter to only complete checklists, then use the function [`auk_zerofill()`](https://cornelllabofornithology.github.io/auk/reference/auk_zerofill.html) to generate detection/non-detection data. Note that shared checklists are combined and taxonomic rollup is performed by default when using the `read_*()` functions from `auk`.
 
@@ -170,14 +190,14 @@ select(zf, observation_count, species_observed) %>%
 
 ## Filtering data {#sec-ebird-filtering}
 
-Now that you have a detection/non-detection dataset, it's likely that you want to do something with it. For example, you may want to make a map, use the eBird data to identify priority areas for a species, or train a species distribution model. Regardless of the specific application, it's likely that some amount of filtering of the data is required first. Some of the ways you may want to filter eBird data include:
+Now that you have a detection/non-detection dataset, it's likely that you want to do something with it. For example, you may want to make a map, identify priority areas for a species, or train a species distribution model. Regardless of the specific application, it's likely that some amount of filtering of the data is required first. Some of the ways you may want to filter eBird data include:
 
 - **Temporal filtering**: filter the data to a specific range of years or to a specific time of year.
 - **Spatial filtering**: filter the data to focus on a specific region, e.g. a protected area.
 - **Increasing precision**: some eBird checklists are quite long in distance or duration leading to spatial or temporal imprecision. By removing longer checklists we can increase the spatial precision of the dataset.
 - **Reducing variation in effort**: unlike structured scientific surveys, data can be submitted to eBird using a variety of protocols and there is significant variation in effort between checklists in the eBird dataset. Variation in protocol and effort leads to variation in detectability (more effort generally leads to higher detectability). We can choose to impose more structure on the eBird dataset by filtering to reduce variation in protocol and effort.
 
-The specific filtering you apply will depend on how you intend to use the eBird data. However, for the sake of this example, let's filter the eBird data to only traveling and stationary checklists from 2013-2022 that are less than 6 hours in duration and 10km in length.
+The specific filtering you apply will depend on how you intend to use the eBird data. However, for the sake of this example, let's filter the eBird data to only traveling and stationary checklists from 2013-2022 that are less than 6 hours in duration and 10 km in length.
 
 ```{r}
 #| label: ebird-filtering-filter
@@ -196,7 +216,7 @@ Finally, many of the columns in this data frame are unnecessary or redundant, so
 
 ```{r}
 #| label: ebird-filtering-select
-checklists <- zf_filtered %>% 
+checklists_zf <- zf_filtered %>% 
   select(checklist_id, 
          latitude, longitude,
          observation_date, time_observations_started,
@@ -213,14 +233,14 @@ The simplest thing we can do with these eBird observations is estimate the frequ
 
 ```{r}
 #| label: ebird-applications-freq-total
-mean(checklists$species_observed)
+mean(checklists_zf$species_observed)
 ```
 
-So, Fork-tailed Flycatcher is fairly common within this region with `r scales::percent(mean(checklists$species_observed))` of checklists detecting the species. Detection frequency can be used to compare the prevalence of a species between regions or over time. For example, Fork-tailed Flycatcher is migratory, so let's look at how detection frequency changes over the months of the year.
+So, Fork-tailed Flycatcher is fairly common within this region with `r scales::percent(mean(checklists_zf$species_observed))` of checklists detecting the species. Detection frequency can be used to compare the prevalence of a species between regions or over time. For example, Fork-tailed Flycatcher is migratory, so let's look at how detection frequency changes over the months of the year.
 
 ```{r}
 #| label: ebird-applications-freq-monthly
-monthly_detection <- checklists %>% 
+monthly_detection <- checklists_zf %>% 
   mutate(month = month(observation_date)) %>% 
   group_by(month) %>% 
   summarize(detection_frequency = mean(species_observed))
@@ -253,7 +273,7 @@ There is significant variability in checklist submissions per month, with twice 
 
 ```{r}
 #| label: ebird-applications-freq-sol
-monthly_checklists <- count(checklists, month = month(observation_date))
+monthly_checklists <- count(checklists_zf, month = month(observation_date))
 
 # plot monthly number of checklists
 ggplot(monthly_checklists) +
@@ -274,7 +294,7 @@ Many applications of eBird data require converting the data into an explicitly s
 
 ```{r}
 #| label: ebird-applications-spatial-convert
-checklists_sf <- st_as_sf(checklists, coords = c("longitude", "latitude"),
+checklists_sf <- st_as_sf(checklists_zf, coords = c("longitude", "latitude"),
                           # 4326 is the code for an unprojected lon/lat
                           # coordiante reference system
                           crs = 4326)
@@ -310,12 +330,12 @@ write_sf(checklists_sf, "data/fotfly-ebird_br-rs.gpkg",
 ::: callout-tip
 ## Tip
 
-[GeoPackage](https://www.geopackage.org/) is a modern, open source alternative to the shapefile format for storing spatial data. GeoPackages avoid many of the problems and limitations associated with shapefiles, and they are much more efficient than shapefiles. The online ArcGIS documentation provides [instructions for how to open a GeoPackage in ArcGIS](https://desktop.arcgis.com/en/arcmap/latest/manage-data/databases/connect-sqlite.htm).
+The [GeoPackage](https://www.geopackage.org/) is a modern, open source alternative to the shapefile format for storing spatial data. GeoPackages avoid many of the problems and limitations associated with shapefiles, and they are much more efficient than shapefiles. The online ArcGIS documentation provides [instructions for how to open a GeoPackage in ArcGIS](https://desktop.arcgis.com/en/arcmap/latest/manage-data/databases/connect-sqlite.htm).
 :::
 
 ### Mapping {#sec-ebird-applications-mapping}
 
-Now that we have the data in a spatial format, we can produce a map of the Fork-tailed Flycatcher detection/non-detection data. For complex, highly customized maps, we recommend using a GIS such as QGIS that's specifically designed for cartography. However, it's possible to make a quick, simple map in R using the `tmap` package.
+Now that we have the data in a spatial format, we can produce a map of the Fork-tailed Flycatcher detection/non-detection data. For complex, highly customized maps, we recommend using a GIS such as QGIS that's specifically designed for cartography. However, it is possible to make a quick, simple map in R.
 
 We'll start by loading polygons defining coutry and state borders, which will provide contextual information for our map. These polygons come from [Natural Earth](https://www.naturalearthdata.com/downloads/), and excellent source of global, attribution free spatial data. The R package `rnaturalearth` provides access to Natural Earth data within R; however, for convenience we've provided the necessary layers in the file `data/gis-data.gpkg` included in the [data package](index.qmd#sec-intro-data) for this workshop. We'll also project everything to an equal area projection center on Rio Grande do Sul.
 
@@ -336,13 +356,13 @@ rgds_boundary <- read_sf("data/gis-data.gpkg", "ne_states") %>%
 checklists_proj <- st_transform(checklists_sf, crs = crs)
 ```
 
-
+Now we can make a map of observations of Fork-tailed Flycatcher in Rio Grande do Sul. We build up the map in layers, first creating a basemap with the Natural Earth polygons, then plotting the eBird detection and non-detection data on top. When building up a map in layes like this, it's often useful to first plot a blank version the main dataset you intend to map to define the spatial extent of the map, then layer everything else on top, finishing with plotting the data a second time so it appears as the top layer.
 
 ```{r}
 #| label: ebird-applications-mapping-map
-par(mar = c(0.25, 0.25, 0.25, 0.25))
+par(mar = c(0.25, 0.25, 2, 0.25))
 
-# set up plot area
+# start with a blank plot of the data to define the spatial extent of the map
 plot(st_geometry(checklists_proj), col = NA)
 
 # contextual gis data
@@ -365,6 +385,5 @@ legend("bottomright", bty = "n",
        legend = c("eBird checklists", "Fork-tailed Flycatcher sightings"),
        pch = 19)
 box()
-par(new = TRUE, mar = c(0, 0, 3, 0))
-title("Fork-tailed Flycatcher eBird Observations\n2013-2022")
+title("Fork-tailed Flycatcher eBird Observations (2013-2022)")
 ```
