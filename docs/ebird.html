@@ -429,7 +429,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In the example dataset used for this workshop, these taxonomic issues don’t apply. We have requested Fork-tailed Flycatcher observations, so we haven’t received any observations for taxa above species, and Fork-tailed Flycatcher only has a single subspecies within Rio Grande do Sul. However, in many other situations, these taxonomic issues can be important.</p>
+<p>In the example dataset used for this workshop, these taxonomic issues don’t apply. We have requested Fork-tailed Flycatcher observations, so we haven’t received any observations for taxa above species, and Fork-tailed Flycatcher only has a single subspecies within Rio Grande do Sul. However, in many other situations, these taxonomic issues can be important. For example, <a href="https://ebird.org/checklist/S100099262">this checklist</a> has 10 Yellow-rumped Warblers, 5 each of two Yellow-rumped Warbler subspecies, and one hybrid between the two subspecies. <code>auk_rollup()</code> will combine all four of these observations into a single Yellow-rumped Warbler observation.</p>
 </div>
 </div>
 <p>The function <a href="https://cornelllabofornithology.github.io/auk/reference/auk_rollup.html"><code>auk_rollup()</code></a> drops all observations not identifiable to a species and rolls up all observations reported below species to the species level.</p>
@@ -464,7 +464,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If multiple taxa on a single checklist roll up to the same species, <code>auk_rollup()</code> attempts to combine them intelligently. If each observation has a count, those counts are added together, but if any of the observations is missing a count (i.e.&nbsp;the count is “X”) the combined observation is also assigned an “X”.</p>
+<p>If multiple taxa on a single checklist roll up to the same species, <code>auk_rollup()</code> attempts to combine them intelligently. If each observation has a count, those counts are added together, but if any of the observations is missing a count (i.e.&nbsp;the count is “X”) the combined observation is also assigned an “X”. In the <a href="https://ebird.org/checklist/S100099262">example checklist</a> from the previous tip, with four taxa all rolling up to Yellow-rumped Warbler, <code>auk_rollup()</code> will add the four counts together to get 21 Yellow-rumped Warblers (10 + 5 + 5 + 1).</p>
 </div>
 </div>
 </section>
