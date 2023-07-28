@@ -1,6 +1,6 @@
+library(glue)
 library(sf)
 library(tidyverse)
-library(glue)
 library(units)
 
 
@@ -78,6 +78,7 @@ gg_low <- ggplot(pts) +
   theme(axis.text = element_blank(),
         panel.background = element_rect(),
         panel.grid = element_blank())
+
 ggsave("images/detection-nondetection_detections.png", gg_detections,
        width = 200, height = 200, units = "px",
        scale = 7, bg = "white")
