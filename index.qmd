@@ -17,7 +17,7 @@ This website contains the notes for a set of two workshops on best practices for
 
 This workshop is intended to be interactive. All examples are written in the R programming language, and the instructor will work through the examples in real time, while the attendees are encouraged following along by writing the same code. To ensure we can avoid any unnecessary delays, please follow these setup instructions prior to the workshop:
 
-1. [Create an eBird account](https://ebird.github.io/ebird-best-practices/intro.html) if you don't already have one and request access to the raw eBird data and/or the eBird Status data products depending on which workshops you're attending:
+1. [Create an eBird account](https://secure.birds.cornell.edu/cassso/account/create) if you don't already have one and request access to the raw eBird data and/or the eBird Status data products depending on which workshops you're attending:
     - Best Practices for Using eBird Data: [request access to the eBird Basic Dataset](https://ebird.org/data/download).
     - eBird Status and Trends: [request access to the eBird Status data products](https://science.ebird.org/en/status-and-trends/download-data)
 2. [Download](https://cloud.r-project.org/) and install the latest version of R. **You must have R version 4.0.0 or newer to follow along with this workshop**
