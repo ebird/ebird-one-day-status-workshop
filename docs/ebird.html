@@ -288,62 +288,109 @@ Checkpoint
 <p>Take some time to explore the variables in the checklist dataset. If you’re unsure about any of the variables, consult the metadata document that came with the data download (<code>eBird_Basic_Dataset_Metadata_v1.14.pdf</code>).</p>
 </div>
 </div>
+<p>For some applications, only the checklist data are required. For example, the checklist data can be used to investigate the spatial and temporal distribution of eBird data within a region. This dataset can also be used to explore how much variation there is in the observation effort variables and identify checklists that have low spatial or temporal precision.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Make a histogram of the distribution of distance traveling for traveling protocol checklists.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Nearly 90% of checklists are less than 10km in length; however, some checklists are as long as 80km in length. Long traveling checklists have lower spatial precision so they should generally be removed prior to analysis.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>checklists_traveling <span class="ot">&lt;-</span> <span class="fu">filter</span>(checklists, protocol_type <span class="sc">==</span> <span class="st">"Traveling"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(checklists_traveling) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> effort_distance_km) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Distance traveled [km]"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"# of eBird checklists"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Distribution of distance traveled on eBird checklists"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ebird_files/figure-html/ebird-import-distance-sol-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <p>Next, let’s import the observation data.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>f_ebd <span class="ot">&lt;-</span> <span class="st">"data/ebd_BR-RS_fotfly_smp_relJun-2023.txt"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">&lt;-</span> <span class="fu">read_ebd</span>(f_ebd, <span class="at">unique =</span> <span class="cn">FALSE</span>, <span class="at">rollup =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(observations)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 4,810</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 49</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ global_unique_identifier   &lt;chr&gt; "URN:CornellLabOfOrnithology:EBIRD:OBS10006…</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ last_edited_date           &lt;chr&gt; "2023-05-11 20:08:09.920625", "2022-08-04 0…</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ taxonomic_order            &lt;dbl&gt; 17062, 17062, 17062, 17062, 17062, 17062, 1…</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ category                   &lt;chr&gt; "species", "species", "species", "species",…</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ taxon_concept_id           &lt;chr&gt; "avibase-A2510EF4", "avibase-A2510EF4", "av…</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ common_name                &lt;chr&gt; "Fork-tailed Flycatcher", "Fork-tailed Flyc…</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ scientific_name            &lt;chr&gt; "Tyrannus savana", "Tyrannus savana", "Tyra…</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ subspecies_common_name     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ subspecies_scientific_name &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ exotic_code                &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_count          &lt;chr&gt; "X", "1", "4", "1", "X", "X", "X", "X", "X"…</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_code              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_category          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ behavior_code              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ age_sex                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country                    &lt;chr&gt; "Brazil", "Brazil", "Brazil", "Brazil", "Br…</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country_code               &lt;chr&gt; "BR", "BR", "BR", "BR", "BR", "BR", "BR", "…</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state                      &lt;chr&gt; "Rio Grande do Sul", "Rio Grande do Sul", "…</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state_code                 &lt;chr&gt; "BR-RS", "BR-RS", "BR-RS", "BR-RS", "BR-RS"…</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county_code                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ iba_code                   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ bcr_code                   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ usfws_code                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ atlas_block                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality                   &lt;chr&gt; "São Francisco de Paula--listas históricas …</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_id                &lt;chr&gt; "L2862103", "L2453957", "L2312691", "L23126…</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_type              &lt;chr&gt; "H", "H", "P", "P", "P", "P", "P", "H", "H"…</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ latitude                   &lt;dbl&gt; -29.4, -31.3, -29.4, -29.4, -29.7, -28.2, -…</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ longitude                  &lt;dbl&gt; -50.6, -51.0, -50.6, -50.6, -50.0, -51.7, -…</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_date           &lt;date&gt; 1993-11-06, 1996-09-28, 1996-10-17, 1996-1…</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ time_observations_started  &lt;chr&gt; NA, "07:00:00", "15:00:00", "06:00:00", NA,…</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observer_id                &lt;chr&gt; "obsr477997", "obsr556494", "obsr293781", "…</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ sampling_event_identifier  &lt;chr&gt; "S75217442", "S28837996", "S14886987", "S14…</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_type              &lt;chr&gt; "Historical", "Historical", "Traveling", "T…</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_code              &lt;chr&gt; "P62", "P62", "P22", "P22", "P20", "P22", "…</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ project_code               &lt;chr&gt; "EBIRD", "EBIRD", "EBIRD", "EBIRD", "EBIRD"…</span></span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ duration_minutes           &lt;int&gt; NA, 720, 120, 480, NA, 120, NA, NA, NA, 120…</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_distance_km         &lt;dbl&gt; NA, NA, 1.61, 6.44, NA, 2.00, NA, NA, NA, 2…</span></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_area_ha             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ number_observers           &lt;int&gt; NA, 2, 12, 12, 1, 1, 1, 2, 1, 1, 8, 8, 2, 2…</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ all_species_reported       &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, …</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ group_identifier           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ has_media                  &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ approved                   &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, T…</span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ reviewed                   &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ reason                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ trip_comments              &lt;chr&gt; NA, NA, "Victor Emanuel Nature Tours birdin…</span></span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ species_comments           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f_ebd <span class="ot">&lt;-</span> <span class="st">"data/ebd_BR-RS_fotfly_smp_relJun-2023.txt"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">&lt;-</span> <span class="fu">read_ebd</span>(f_ebd, <span class="at">unique =</span> <span class="cn">FALSE</span>, <span class="at">rollup =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(observations)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 4,810</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 49</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ global_unique_identifier   &lt;chr&gt; "URN:CornellLabOfOrnithology:EBIRD:OBS10006…</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ last_edited_date           &lt;chr&gt; "2023-05-11 20:08:09.920625", "2022-08-04 0…</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ taxonomic_order            &lt;dbl&gt; 17062, 17062, 17062, 17062, 17062, 17062, 1…</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ category                   &lt;chr&gt; "species", "species", "species", "species",…</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ taxon_concept_id           &lt;chr&gt; "avibase-A2510EF4", "avibase-A2510EF4", "av…</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ common_name                &lt;chr&gt; "Fork-tailed Flycatcher", "Fork-tailed Flyc…</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ scientific_name            &lt;chr&gt; "Tyrannus savana", "Tyrannus savana", "Tyra…</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ subspecies_common_name     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ subspecies_scientific_name &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ exotic_code                &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_count          &lt;chr&gt; "X", "1", "4", "1", "X", "X", "X", "X", "X"…</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_code              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_category          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ behavior_code              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ age_sex                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country                    &lt;chr&gt; "Brazil", "Brazil", "Brazil", "Brazil", "Br…</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country_code               &lt;chr&gt; "BR", "BR", "BR", "BR", "BR", "BR", "BR", "…</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state                      &lt;chr&gt; "Rio Grande do Sul", "Rio Grande do Sul", "…</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state_code                 &lt;chr&gt; "BR-RS", "BR-RS", "BR-RS", "BR-RS", "BR-RS"…</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county_code                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ iba_code                   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ bcr_code                   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ usfws_code                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ atlas_block                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality                   &lt;chr&gt; "São Francisco de Paula--listas históricas …</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_id                &lt;chr&gt; "L2862103", "L2453957", "L2312691", "L23126…</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_type              &lt;chr&gt; "H", "H", "P", "P", "P", "P", "P", "H", "H"…</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ latitude                   &lt;dbl&gt; -29.4, -31.3, -29.4, -29.4, -29.7, -28.2, -…</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ longitude                  &lt;dbl&gt; -50.6, -51.0, -50.6, -50.6, -50.0, -51.7, -…</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_date           &lt;date&gt; 1993-11-06, 1996-09-28, 1996-10-17, 1996-1…</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ time_observations_started  &lt;chr&gt; NA, "07:00:00", "15:00:00", "06:00:00", NA,…</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observer_id                &lt;chr&gt; "obsr477997", "obsr556494", "obsr293781", "…</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ sampling_event_identifier  &lt;chr&gt; "S75217442", "S28837996", "S14886987", "S14…</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_type              &lt;chr&gt; "Historical", "Historical", "Traveling", "T…</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_code              &lt;chr&gt; "P62", "P62", "P22", "P22", "P20", "P22", "…</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ project_code               &lt;chr&gt; "EBIRD", "EBIRD", "EBIRD", "EBIRD", "EBIRD"…</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ duration_minutes           &lt;int&gt; NA, 720, 120, 480, NA, 120, NA, NA, NA, 120…</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_distance_km         &lt;dbl&gt; NA, NA, 1.61, 6.44, NA, 2.00, NA, NA, NA, 2…</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_area_ha             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ number_observers           &lt;int&gt; NA, 2, 12, 12, 1, 1, 1, 2, 1, 1, 8, 8, 2, 2…</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ all_species_reported       &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, …</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ group_identifier           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ has_media                  &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ approved                   &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, T…</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ reviewed                   &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ reason                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ trip_comments              &lt;chr&gt; NA, NA, "Victor Emanuel Nature Tours birdin…</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ species_comments           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -363,35 +410,35 @@ Checkpoint
 <h3 data-number="1.3.1" class="anchored" data-anchor-id="sec-ebird-import-shared"><span class="header-section-number">1.3.1</span> Shared checklists</h3>
 <p>eBird allows users to <a href="https://support.ebird.org/en/support/solutions/articles/48000625567-checklist-sharing-and-group-accounts#anchorShareChecklists">share checklists</a> with other eBirders in their group, for example <a href="https://ebird.org/checklist/S95914477">this checklist</a> is shared by 10 observers. These checklists can be identified by looking at the <code>group_identifier</code> variable, which assigns an ID connecting all checklists in the group.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>checklists <span class="sc">%&gt;%</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(group_identifier)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(group_identifier) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sampling_event_identifier, group_identifier)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8,632 × 2</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sampling_event_identifier group_identifier</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;chr&gt;           </span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S133745869                G10019405       </span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 S134107963                G10019405       </span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 S134468930                G10040061       </span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 S134466265                G10040061       </span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 S134466330                G10040062       </span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 S134468944                G10040062       </span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 8,626 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>checklists <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(group_identifier)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(group_identifier) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sampling_event_identifier, group_identifier)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8,632 × 2</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sampling_event_identifier group_identifier</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;chr&gt;           </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S133745869                G10019405       </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 S134107963                G10019405       </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 S134468930                G10040061       </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 S134466265                G10040061       </span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 S134466330                G10040062       </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 S134468944                G10040062       </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 8,626 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Checklists with the same <code>group_identifier</code> provide duplicate information on the same birding event in the eBird database. For most analyses, it’s important to collapse these shared checklists down into a single checklist. This can be accomplished with the function <a href="https://cornelllabofornithology.github.io/auk/reference/auk_unique.html"><code>auk_unique()</code></a>, which retains only one independent copy of each checklist.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>checklists_unique <span class="ot">&lt;-</span> <span class="fu">auk_unique</span>(checklists, <span class="at">checklists_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(checklists)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 34005</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(checklists_unique)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 28930</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>checklists_unique <span class="ot">&lt;-</span> <span class="fu">auk_unique</span>(checklists, <span class="at">checklists_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(checklists)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 34005</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(checklists_unique)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 28930</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Notice that a new variable, <code>checklist_id</code>, was created that is set to <code>group_identifier</code> for shared checklists and <code>sampling_event_identifier</code> for non-shared checklists.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(checklists_unique<span class="sc">$</span>checklist_id)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "S81646316" "S98801647" "S98802795" "S7580857"  "S7581039"  "S28832587"</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(checklists_unique<span class="sc">$</span>checklist_id)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "G7592371" "G7592372" "G7573316" "G7594361" "G7633009" "G7603956"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(checklists_unique<span class="sc">$</span>checklist_id)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "S81646316" "S98801647" "S98802795" "S7580857"  "S7581039"  "S28832587"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(checklists_unique<span class="sc">$</span>checklist_id)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "G7592371" "G7592372" "G7573316" "G7594361" "G7633009" "G7603956"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -403,15 +450,15 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Curious when checklists and observers contributed to a shared checklist after it has been collapsed? The <code>sampling_event_identifier</code> and <code>observer_id</code> contain comma-separated lists of all checklists and observers that went into the shared checklists.</p>
+<p>Curious what checklists and observers contributed to a shared checklist after it has been collapsed? The <code>sampling_event_identifier</code> and <code>observer_id</code> contain comma-separated lists of all checklists and observers that went into the shared checklists.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>checklists_unique <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(checklist_id <span class="sc">==</span> <span class="st">"G10019405"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(checklist_id, group_identifier, sampling_event_identifier, observer_id)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 4</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   checklist_id group_identifier sampling_event_identifier observer_id         </span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;                     &lt;chr&gt;               </span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 G10019405    G10019405        S133745869,S134107963     obs1481597,obs567598</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>checklists_unique <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(checklist_id <span class="sc">==</span> <span class="st">"G10019405"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(checklist_id, group_identifier, sampling_event_identifier, observer_id)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 4</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   checklist_id group_identifier sampling_event_identifier observer_id         </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;                     &lt;chr&gt;               </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 G10019405    G10019405        S133745869,S134107963     obs1481597,obs567598</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -434,25 +481,25 @@ Tip
 </div>
 <p>The function <a href="https://cornelllabofornithology.github.io/auk/reference/auk_rollup.html"><code>auk_rollup()</code></a> drops all observations not identifiable to a species and rolls up all observations reported below species to the species level.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>observations_rollup <span class="ot">&lt;-</span> <span class="fu">auk_rollup</span>(observations)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># only one checklist is affected by this</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>observations <span class="sc">%&gt;%</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sampling_event_identifier <span class="sc">==</span> <span class="st">"S99335111"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sampling_event_identifier, common_name, subspecies_common_name, </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>         observation_count)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 4</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sampling_event_identifier common_name subspecies_common_name observation_count</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;chr&gt;       &lt;chr&gt;                  &lt;chr&gt;            </span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S99335111                 Fork-taile… &lt;NA&gt;                   X                </span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 S99335111                 Fork-taile… Fork-tailed Flycatche… 1</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>observations_rollup <span class="sc">%&gt;%</span> </span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sampling_event_identifier <span class="sc">==</span> <span class="st">"S99335111"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sampling_event_identifier, common_name,</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>         observation_count)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 3</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sampling_event_identifier common_name            observation_count</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;chr&gt;                  &lt;chr&gt;            </span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S99335111                 Fork-tailed Flycatcher X</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>observations_rollup <span class="ot">&lt;-</span> <span class="fu">auk_rollup</span>(observations)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># only one checklist is affected by this</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>observations <span class="sc">%&gt;%</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sampling_event_identifier <span class="sc">==</span> <span class="st">"S99335111"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sampling_event_identifier, common_name, subspecies_common_name, </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>         observation_count)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 4</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sampling_event_identifier common_name subspecies_common_name observation_count</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;chr&gt;       &lt;chr&gt;                  &lt;chr&gt;            </span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S99335111                 Fork-taile… &lt;NA&gt;                   X                </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 S99335111                 Fork-taile… Fork-tailed Flycatche… 1</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>observations_rollup <span class="sc">%&gt;%</span> </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sampling_event_identifier <span class="sc">==</span> <span class="st">"S99335111"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sampling_event_identifier, common_name,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>         observation_count)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sampling_event_identifier common_name            observation_count</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;chr&gt;                  &lt;chr&gt;            </span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S99335111                 Fork-tailed Flycatcher X</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -474,90 +521,90 @@ Tip
 <p>Complete eBird checklists are extremely valuable because, for all species that weren’t reported, we can infer counts of 0. This allows us to convert eBird from presence only data to detection/non-detection data, which allows for much more robust analyses. Note that we don’t use the term presence/absence data here because a non-detection doesn’t necessarily imply the species was absent, only that the observer didn’t detect and identify it.</p>
 <p>We refer to the process of producing detection/non-detection data as “zero-filling” the eBird data because we’re filling in the missing zeros. We’ll read the eBird data into R again, filter to only complete checklists, then use the function <a href="https://cornelllabofornithology.github.io/auk/reference/auk_zerofill.html"><code>auk_zerofill()</code></a> to generate detection/non-detection data. Note that shared checklists are combined and taxonomic rollup is performed by default when using the <code>read_*()</code> functions from <code>auk</code>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import checklist data</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>checklists <span class="ot">&lt;-</span> <span class="fu">read_sampling</span>(f_sed) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subset to complete checklists</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(all_species_reported)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import observation data</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">&lt;-</span> <span class="fu">read_ebd</span>(f_ebd) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subset to complete checklists</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(all_species_reported)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># zero-fill to produce detection/non-detection data</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>zf <span class="ot">&lt;-</span> <span class="fu">auk_zerofill</span>(observations, checklists, <span class="at">collapse =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(zf)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 22,838</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 38</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ checklist_id              &lt;chr&gt; "S98801647", "S98802795", "S91164181", "S114…</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ last_edited_date          &lt;chr&gt; "2021-12-12 14:52:43.115062", "2022-10-25 03…</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country                   &lt;chr&gt; "Brazil", "Brazil", "Brazil", "Brazil", "Bra…</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country_code              &lt;chr&gt; "BR", "BR", "BR", "BR", "BR", "BR", "BR", "B…</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state                     &lt;chr&gt; "Rio Grande do Sul", "Rio Grande do Sul", "R…</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state_code                &lt;chr&gt; "BR-RS", "BR-RS", "BR-RS", "BR-RS", "BR-RS",…</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county_code               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ iba_code                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ bcr_code                  &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ usfws_code                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ atlas_block               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality                  &lt;chr&gt; "Capela Sagrado Coração de Jesus,RS,BR", "Ca…</span></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_id               &lt;chr&gt; "L10637103", "L10637103", "L15616802", "L165…</span></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_type             &lt;chr&gt; "P", "P", "P", "P", "H", "P", "P", "P", "P",…</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ latitude                  &lt;dbl&gt; -28.2, -28.2, -29.3, -29.3, -29.5, -29.3, -3…</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ longitude                 &lt;dbl&gt; -51.7, -51.7, -49.7, -49.7, -50.6, -50.3, -5…</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_date          &lt;date&gt; 1998-12-11, 1999-12-27, 1989-12-27, 1992-04…</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ time_observations_started &lt;chr&gt; "09:00:00", "09:00:00", "07:30:00", NA, NA, …</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observer_id               &lt;chr&gt; "obs1166183", "obs1166183", "obs501289", "ob…</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ sampling_event_identifier &lt;chr&gt; "S98801647", "S98802795", "S91164181", "S114…</span></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_type             &lt;chr&gt; "Traveling", "Traveling", "Traveling", "Hist…</span></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_code             &lt;chr&gt; "P22", "P22", "P22", "P62", "P62", "P22", "P…</span></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ project_code              &lt;chr&gt; "EBIRD", "EBIRD", "EBIRD", "EBIRD", "EBIRD",…</span></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ duration_minutes          &lt;int&gt; 120, 120, 80, NA, NA, 180, NA, NA, 120, 480,…</span></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_distance_km        &lt;dbl&gt; 2.000, 2.000, 4.000, NA, NA, 5.000, NA, NA, …</span></span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_area_ha            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ number_observers          &lt;int&gt; 1, 1, 1, 1, 2, 1, 3, 3, 12, 12, 12, 2, 1, NA…</span></span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ all_species_reported      &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TR…</span></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ group_identifier          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ trip_comments             &lt;chr&gt; "lista feita por LB.", "lista feita por LB."…</span></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ scientific_name           &lt;chr&gt; "Tyrannus savana", "Tyrannus savana", "Tyran…</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_code             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_category         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ behavior_code             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ age_sex                   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_count         &lt;chr&gt; "X", "X", "0", "0", "0", "0", "0", "0", "4",…</span></span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ species_observed          &lt;lgl&gt; TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALS…</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import checklist data</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>checklists <span class="ot">&lt;-</span> <span class="fu">read_sampling</span>(f_sed) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subset to complete checklists</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(all_species_reported)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># import observation data</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">&lt;-</span> <span class="fu">read_ebd</span>(f_ebd) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subset to complete checklists</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(all_species_reported)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># zero-fill to produce detection/non-detection data</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>zf <span class="ot">&lt;-</span> <span class="fu">auk_zerofill</span>(observations, checklists, <span class="at">collapse =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(zf)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 22,838</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 38</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ checklist_id              &lt;chr&gt; "S98801647", "S98802795", "S91164181", "S114…</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ last_edited_date          &lt;chr&gt; "2021-12-12 14:52:43.115062", "2022-10-25 03…</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country                   &lt;chr&gt; "Brazil", "Brazil", "Brazil", "Brazil", "Bra…</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ country_code              &lt;chr&gt; "BR", "BR", "BR", "BR", "BR", "BR", "BR", "B…</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state                     &lt;chr&gt; "Rio Grande do Sul", "Rio Grande do Sul", "R…</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ state_code                &lt;chr&gt; "BR-RS", "BR-RS", "BR-RS", "BR-RS", "BR-RS",…</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ county_code               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ iba_code                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ bcr_code                  &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ usfws_code                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ atlas_block               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality                  &lt;chr&gt; "Capela Sagrado Coração de Jesus,RS,BR", "Ca…</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_id               &lt;chr&gt; "L10637103", "L10637103", "L15616802", "L165…</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ locality_type             &lt;chr&gt; "P", "P", "P", "P", "H", "P", "P", "P", "P",…</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ latitude                  &lt;dbl&gt; -28.2, -28.2, -29.3, -29.3, -29.5, -29.3, -3…</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ longitude                 &lt;dbl&gt; -51.7, -51.7, -49.7, -49.7, -50.6, -50.3, -5…</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_date          &lt;date&gt; 1998-12-11, 1999-12-27, 1989-12-27, 1992-04…</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ time_observations_started &lt;chr&gt; "09:00:00", "09:00:00", "07:30:00", NA, NA, …</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observer_id               &lt;chr&gt; "obs1166183", "obs1166183", "obs501289", "ob…</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ sampling_event_identifier &lt;chr&gt; "S98801647", "S98802795", "S91164181", "S114…</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_type             &lt;chr&gt; "Traveling", "Traveling", "Traveling", "Hist…</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ protocol_code             &lt;chr&gt; "P22", "P22", "P22", "P62", "P62", "P22", "P…</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ project_code              &lt;chr&gt; "EBIRD", "EBIRD", "EBIRD", "EBIRD", "EBIRD",…</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ duration_minutes          &lt;int&gt; 120, 120, 80, NA, NA, 180, NA, NA, 120, 480,…</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_distance_km        &lt;dbl&gt; 2.000, 2.000, 4.000, NA, NA, 5.000, NA, NA, …</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ effort_area_ha            &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ number_observers          &lt;int&gt; 1, 1, 1, 1, 2, 1, 3, 3, 12, 12, 12, 2, 1, NA…</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ all_species_reported      &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TR…</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ group_identifier          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ trip_comments             &lt;chr&gt; "lista feita por LB.", "lista feita por LB."…</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ scientific_name           &lt;chr&gt; "Tyrannus savana", "Tyrannus savana", "Tyran…</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_code             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ breeding_category         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ behavior_code             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ age_sex                   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ observation_count         &lt;chr&gt; "X", "X", "0", "0", "0", "0", "0", "0", "4",…</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ species_observed          &lt;lgl&gt; TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALS…</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>observation_count</code> variable has true counts as well as “X”s, which indicate that the species was detected but the number of individuals was not counted. <code>auk_zerofill()</code> adds a new binary column, <code>species_observed</code>, indicating whether or not the species was detected.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(zf, observation_count, species_observed) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 2</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   observation_count species_observed</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;lgl&gt;           </span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 X                 TRUE            </span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 X                 TRUE            </span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 0                 FALSE           </span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 0                 FALSE           </span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 0                 FALSE           </span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 0                 FALSE           </span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 4 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(zf, observation_count, species_observed) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 2</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   observation_count species_observed</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;lgl&gt;           </span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 X                 TRUE            </span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 X                 TRUE            </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 0                 FALSE           </span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 0                 FALSE           </span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 0                 FALSE           </span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 0                 FALSE           </span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 4 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s convert the “X”s to NAs and transform <code>observation_count</code> to an integer variable.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>zf<span class="sc">$</span>observation_count <span class="ot">&lt;-</span> <span class="fu">if_else</span>(zf<span class="sc">$</span>observation_count <span class="sc">==</span> <span class="st">"X"</span>, </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                                <span class="cn">NA_character_</span>, zf<span class="sc">$</span>observation_count) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.integer</span>()</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(zf, observation_count, species_observed) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 2</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   observation_count species_observed</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               &lt;int&gt; &lt;lgl&gt;           </span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1                NA TRUE            </span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2                NA TRUE            </span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3                 0 FALSE           </span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4                 0 FALSE           </span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5                 0 FALSE           </span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6                 0 FALSE           </span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 4 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>zf<span class="sc">$</span>observation_count <span class="ot">&lt;-</span> <span class="fu">if_else</span>(zf<span class="sc">$</span>observation_count <span class="sc">==</span> <span class="st">"X"</span>, </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                                <span class="cn">NA_character_</span>, zf<span class="sc">$</span>observation_count) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.integer</span>()</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(zf, observation_count, species_observed) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 2</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   observation_count species_observed</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               &lt;int&gt; &lt;lgl&gt;           </span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1                NA TRUE            </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2                NA TRUE            </span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3                 0 FALSE           </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4                 0 FALSE           </span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5                 0 FALSE           </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6                 0 FALSE           </span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 4 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-ebird-filtering" class="level2" data-number="1.5">
@@ -571,26 +618,26 @@ Tip
 </ul>
 <p>The specific filtering you apply will depend on how you intend to use the eBird data. However, for the sake of this example, let’s filter the eBird data to only traveling and stationary checklists from 2013-2022 that are less than 6 hours in duration and 10 km in length.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>zf_filtered <span class="ot">&lt;-</span> zf <span class="sc">%&gt;%</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(observation_date) <span class="sc">&gt;=</span> <span class="dv">2013</span>, <span class="fu">year</span>(observation_date) <span class="sc">&lt;=</span> <span class="dv">2022</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>         protocol_type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Traveling"</span>, <span class="st">"Stationary"</span>),</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>         duration_minutes <span class="sc">&lt;</span> <span class="dv">6</span> <span class="sc">*</span> <span class="dv">60</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>         effort_distance_km <span class="sc">&lt;</span> <span class="dv">10</span> <span class="sc">|</span> protocol_type <span class="sc">==</span> <span class="st">"Stationary"</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(zf)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 22838</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(zf_filtered)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 16526</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>zf_filtered <span class="ot">&lt;-</span> zf <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(observation_date) <span class="sc">&gt;=</span> <span class="dv">2013</span>, <span class="fu">year</span>(observation_date) <span class="sc">&lt;=</span> <span class="dv">2022</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         protocol_type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Traveling"</span>, <span class="st">"Stationary"</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>         duration_minutes <span class="sc">&lt;</span> <span class="dv">6</span> <span class="sc">*</span> <span class="dv">60</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>         effort_distance_km <span class="sc">&lt;</span> <span class="dv">10</span> <span class="sc">|</span> protocol_type <span class="sc">==</span> <span class="st">"Stationary"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(zf)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 22838</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(zf_filtered)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 16526</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We reduced the number of checklists by 6,312, but the checklists remaining are of higher quality.</p>
 <p>Finally, many of the columns in this data frame are unnecessary or redundant, so we’ll select only the columns we need.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>checklists_zf <span class="ot">&lt;-</span> zf_filtered <span class="sc">%&gt;%</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(checklist_id, </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         latitude, longitude,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>         observation_date, time_observations_started,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>         protocol_type,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>         duration_minutes, effort_distance_km, number_observers,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         observation_count, species_observed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>checklists_zf <span class="ot">&lt;-</span> zf_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(checklist_id, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>         latitude, longitude,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>         observation_date, time_observations_started,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>         protocol_type,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>         duration_minutes, effort_distance_km, number_observers,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>         observation_count, species_observed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-ebird-applications" class="level2" data-number="1.6">
@@ -599,27 +646,27 @@ Tip
 <h3 data-number="1.6.1" class="anchored" data-anchor-id="sec-ebird-applications-freq"><span class="header-section-number">1.6.1</span> Detection frequency</h3>
 <p>The simplest thing we can do with these eBird observations is estimate the frequency of detection of Fork-tailed Flycatcher within Rio Grande do Sul. This is the proportion of eBird checklists in the region that detected the species. <code>species_observed</code> is a binary <code>TRUE/FALSE</code> column indicating if a species was detected and R treats <code>TRUE</code> as 1 and <code>FALSE</code> as 0, so we can take the average of this column to get the detection frequency.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(checklists_zf<span class="sc">$</span>species_observed)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.15</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(checklists_zf<span class="sc">$</span>species_observed)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.15</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>So, Fork-tailed Flycatcher is fairly common within this region with 15% of checklists detecting the species. Detection frequency can be used to compare the prevalence of a species between regions or over time. For example, Fork-tailed Flycatcher is migratory, so let’s look at how detection frequency changes over the months of the year.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>monthly_detection <span class="ot">&lt;-</span> checklists_zf <span class="sc">%&gt;%</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(observation_date)) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">detection_frequency =</span> <span class="fu">mean</span>(species_observed))</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot monthly detection frequency</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_detection) <span class="sc">+</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> detection_frequency) <span class="sc">+</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Month of year"</span>,</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Detection frequency"</span>,</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Monthly detection frequency for Fork-tailed Flycatcher"</span>,</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Rio Grande do Sul, Brazil"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>monthly_detection <span class="ot">&lt;-</span> checklists_zf <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(observation_date)) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">detection_frequency =</span> <span class="fu">mean</span>(species_observed))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot monthly detection frequency</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_detection) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> detection_frequency) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Month of year"</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Detection frequency"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Monthly detection frequency for Fork-tailed Flycatcher"</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Rio Grande do Sul, Brazil"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -643,7 +690,7 @@ Exercise
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -652,22 +699,22 @@ Solution
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>There is significant variability in checklist submissions per month, with twice as many checklists in February as October. If we were to look at the monthly number of detections from presence-only data we would expect more detections in months with more checklists even if the prevalence of Fork-tailed Flycatcher is the same.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>monthly_checklists <span class="ot">&lt;-</span> <span class="fu">count</span>(checklists_zf, <span class="at">month =</span> <span class="fu">month</span>(observation_date))</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot monthly number of checklists</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_checklists) <span class="sc">+</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> n) <span class="sc">+</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Month of year"</span>,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"# of eBird checklists"</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Monthly eBird checklist submissions in Rio Grande do Sul"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>monthly_checklists <span class="ot">&lt;-</span> <span class="fu">count</span>(checklists_zf, <span class="at">month =</span> <span class="fu">month</span>(observation_date))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot monthly number of checklists</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_checklists) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> n) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Month of year"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"# of eBird checklists"</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Monthly eBird checklist submissions in Rio Grande do Sul"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -684,46 +731,46 @@ Solution
 <h3 data-number="1.6.2" class="anchored" data-anchor-id="sec-ebird-applications-spatial"><span class="header-section-number">1.6.2</span> Converting to spatial format</h3>
 <p>Many applications of eBird data require converting the data into an explicitly spatial format, for example, to make a map or subset the observations to only those within a polygon for a protected area. The R package <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> can be use to represent spatial points, lines, and polygons in R. We can convert the data frame of checklists to an <code>sf</code> object using the latitude and longitude.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>checklists_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(checklists_zf, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># 4326 is the code for an unprojected lon/lat</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># coordiante reference system</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(checklists_sf)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 16526 features and 9 fields</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geometry type: POINT</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -57.6 ymin: -35 xmax: -48.7 ymax: -27.1</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 16,526 × 10</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   checklist_id observation_date time_observations_started protocol_type</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;        &lt;date&gt;           &lt;chr&gt;                     &lt;chr&gt;        </span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S117444976   2013-05-18       07:47:00                  Traveling    </span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 S117215031   2013-04-14       07:53:00                  Traveling    </span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 S53740464    2013-01-11       08:00:00                  Traveling    </span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 S16023053    2013-12-14       17:30:00                  Stationary   </span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 S15844084    2013-12-03       13:00:00                  Traveling    </span></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 S117214399   2013-03-16       07:36:00                  Traveling    </span></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 16,520 more rows</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 6 more variables: duration_minutes &lt;int&gt;, effort_distance_km &lt;dbl&gt;,</span></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   number_observers &lt;int&gt;, observation_count &lt;int&gt;, species_observed &lt;lgl&gt;,</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   geometry &lt;POINT [°]&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>checklists_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(checklists_zf, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># 4326 is the code for an unprojected lon/lat</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># coordiante reference system</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(checklists_sf)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 16526 features and 9 fields</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geometry type: POINT</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -57.6 ymin: -35 xmax: -48.7 ymax: -27.1</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 16,526 × 10</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   checklist_id observation_date time_observations_started protocol_type</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;        &lt;date&gt;           &lt;chr&gt;                     &lt;chr&gt;        </span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 S117444976   2013-05-18       07:47:00                  Traveling    </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 S117215031   2013-04-14       07:53:00                  Traveling    </span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 S53740464    2013-01-11       08:00:00                  Traveling    </span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 S16023053    2013-12-14       17:30:00                  Stationary   </span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 S15844084    2013-12-03       13:00:00                  Traveling    </span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 S117214399   2013-03-16       07:36:00                  Traveling    </span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 16,520 more rows</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 6 more variables: duration_minutes &lt;int&gt;, effort_distance_km &lt;dbl&gt;,</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   number_observers &lt;int&gt;, observation_count &lt;int&gt;, species_observed &lt;lgl&gt;,</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   geometry &lt;POINT [°]&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Imagine that we’re only interested in observations from within 50 km of Gramado, Brazil (29.375°S, 50.876°W). We can use <code>sf</code> to generate a circle of radium 50 km centered on Gramado, then subset observations to only those falling within the circle.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>gramado_point <span class="ot">&lt;-</span> <span class="fu">st_sfc</span>(<span class="fu">st_point</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">50.876</span>, <span class="sc">-</span><span class="fl">29.375</span>)), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 50km = 50,000m</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>gramado_circle <span class="ot">&lt;-</span> <span class="fu">st_buffer</span>(gramado_point, <span class="at">dist =</span> <span class="dv">50000</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>checklists_gramado <span class="ot">&lt;-</span> checklists_sf[gramado_circle, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>gramado_point <span class="ot">&lt;-</span> <span class="fu">st_sfc</span>(<span class="fu">st_point</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">50.876</span>, <span class="sc">-</span><span class="fl">29.375</span>)), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 50km = 50,000m</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>gramado_circle <span class="ot">&lt;-</span> <span class="fu">st_buffer</span>(gramado_point, <span class="at">dist =</span> <span class="dv">50000</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>checklists_gramado <span class="ot">&lt;-</span> checklists_sf[gramado_circle, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We could now, for example, calculate the detection frequency in the area around Gramado.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(checklists_gramado<span class="sc">$</span>species_observed)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.097</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(checklists_gramado<span class="sc">$</span>species_observed)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.097</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, in many cases, it may be more convenient to work with eBird data outside of R in a GIS such as <a href="https://qgis.org/en/site/">QGIS</a>, a free and open source GIS. We can export the Fork-tailed Flycatcher observations to a GeoPackage using <code>sf</code>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(checklists_sf, <span class="st">"data/fotfly-ebird_br-rs.gpkg"</span>,</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">layer =</span> <span class="st">"fotfly_observations"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(checklists_sf, <span class="st">"data/fotfly-ebird_br-rs.gpkg"</span>,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">layer =</span> <span class="st">"fotfly_observations"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -744,54 +791,54 @@ Tip
 <p>Now that we have the data in a spatial format, we can produce a map of the Fork-tailed Flycatcher detection/non-detection data. For complex, highly customized maps, we recommend using a GIS such as QGIS that’s specifically designed for cartography. However, it is possible to make a quick, simple map in R.</p>
 <p>We’ll start by loading polygons defining coutry and state borders, which will provide contextual information for our map. These polygons come from <a href="https://www.naturalearthdata.com/downloads/">Natural Earth</a>, and excellent source of global, attribution free spatial data. The R package <code>rnaturalearth</code> provides access to Natural Earth data within R; however, for convenience we’ve provided the necessary layers in the file <code>data/gis-data.gpkg</code> included in the <a href="./index.html#sec-intro-data">data package</a> for this workshop. We’ll also project everything to an equal area projection center on Rio Grande do Sul.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>crs <span class="ot">&lt;-</span> <span class="fu">st_crs</span>(<span class="st">"+proj=laea +lat_0=-30 +lon_0=-50"</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># polygons from natural earth</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>ne_land <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/gis-data.gpkg"</span>, <span class="st">"ne_land"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> crs)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>ne_country_lines <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/gis-data.gpkg"</span>, <span class="st">"ne_country_lines"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> crs)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>rgds_boundary <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/gis-data.gpkg"</span>, <span class="st">"ne_states"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(state_code <span class="sc">==</span> <span class="st">"BR-RS"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> crs)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># transform ebird data to equal area projection</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>checklists_proj <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(checklists_sf, <span class="at">crs =</span> crs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>crs <span class="ot">&lt;-</span> <span class="fu">st_crs</span>(<span class="st">"+proj=laea +lat_0=-30 +lon_0=-50"</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># polygons from natural earth</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>ne_land <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/gis-data.gpkg"</span>, <span class="st">"ne_land"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> crs)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>ne_country_lines <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/gis-data.gpkg"</span>, <span class="st">"ne_country_lines"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> crs)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>rgds_boundary <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/gis-data.gpkg"</span>, <span class="st">"ne_states"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(state_code <span class="sc">==</span> <span class="st">"BR-RS"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> crs)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"># transform ebird data to equal area projection</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>checklists_proj <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(checklists_sf, <span class="at">crs =</span> crs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we can make a map of observations of Fork-tailed Flycatcher in Rio Grande do Sul. We build up the map in layers, first creating a basemap with the Natural Earth polygons, then plotting the eBird detection and non-detection data on top. When building up a map in layes like this, it’s often useful to first plot a blank version the main dataset you intend to map to define the spatial extent of the map, then layer everything else on top, finishing with plotting the data a second time so it appears as the top layer.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="dv">2</span>, <span class="fl">0.25</span>))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># start with a blank plot of the data to define the spatial extent of the map</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(checklists_proj), <span class="at">col =</span> <span class="cn">NA</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># contextual gis data</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ne_land, <span class="at">col =</span> <span class="st">"#dddddd"</span>, <span class="at">border =</span> <span class="st">"#888888"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rgds_boundary, <span class="at">col =</span> <span class="st">"#cccccc"</span>, <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in plot.sf(rgds_boundary, col = "#cccccc", border = NA, add = TRUE):</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ignoring all but the first attribute</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ne_country_lines, <span class="at">col =</span> <span class="st">"#ffffff"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ebird observations</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co"># not detected</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">filter</span>(checklists_proj, <span class="sc">!</span>species_observed),</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, <span class="at">col =</span> <span class="fu">alpha</span>(<span class="st">"#555555"</span>, <span class="fl">0.5</span>),</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in plot.sf(filter(checklists_proj, !species_observed), pch = 19, :</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ignoring all but the first attribute</span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co"># detected</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">filter</span>(checklists_proj, species_observed),</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.3</span>, <span class="at">col =</span> <span class="fu">alpha</span>(<span class="st">"#4daf4a"</span>, <span class="dv">1</span>),</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in plot.sf(filter(checklists_proj, species_observed), pch = 19, :</span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ignoring all but the first attribute</span></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="co"># legend</span></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">bty =</span> <span class="st">"n"</span>,</span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"#555555"</span>, <span class="st">"#4daf4a"</span>),</span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"eBird checklists"</span>, <span class="st">"Fork-tailed Flycatcher sightings"</span>),</span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">19</span>)</span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>()</span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="st">"Fork-tailed Flycatcher eBird Observations (2013-2022)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="dv">2</span>, <span class="fl">0.25</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># start with a blank plot of the data to define the spatial extent of the map</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(checklists_proj), <span class="at">col =</span> <span class="cn">NA</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># contextual gis data</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ne_land, <span class="at">col =</span> <span class="st">"#dddddd"</span>, <span class="at">border =</span> <span class="st">"#888888"</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rgds_boundary, <span class="at">col =</span> <span class="st">"#cccccc"</span>, <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in plot.sf(rgds_boundary, col = "#cccccc", border = NA, add = TRUE):</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ignoring all but the first attribute</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ne_country_lines, <span class="at">col =</span> <span class="st">"#ffffff"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ebird observations</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co"># not detected</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">filter</span>(checklists_proj, <span class="sc">!</span>species_observed),</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, <span class="at">col =</span> <span class="fu">alpha</span>(<span class="st">"#555555"</span>, <span class="fl">0.5</span>),</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in plot.sf(filter(checklists_proj, !species_observed), pch = 19, :</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ignoring all but the first attribute</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co"># detected</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">filter</span>(checklists_proj, species_observed),</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.3</span>, <span class="at">col =</span> <span class="fu">alpha</span>(<span class="st">"#4daf4a"</span>, <span class="dv">1</span>),</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in plot.sf(filter(checklists_proj, species_observed), pch = 19, :</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ignoring all but the first attribute</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="co"># legend</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">bty =</span> <span class="st">"n"</span>,</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"#555555"</span>, <span class="st">"#4daf4a"</span>),</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"eBird checklists"</span>, <span class="st">"Fork-tailed Flycatcher sightings"</span>),</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>()</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="st">"Fork-tailed Flycatcher eBird Observations (2013-2022)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">

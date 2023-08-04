@@ -57,6 +57,32 @@ glimpse(checklists)
 Take some time to explore the variables in the checklist dataset. If you're unsure about any of the variables, consult the metadata document that came with the data download (`eBird_Basic_Dataset_Metadata_v1.14.pdf`).
 :::
 
+For some applications, only the checklist data are required. For example, the checklist data can be used to investigate the spatial and temporal distribution of eBird data within a region. This dataset can also be used to explore how much variation there is in the observation effort variables and identify checklists that have low spatial or temporal precision.
+
+::: {.callout-caution icon="false"}
+## Exercise
+
+Make a histogram of the distribution of distance traveling for traveling protocol checklists.
+:::
+
+::: {.callout-note icon="false" collapse="true"}
+## Solution
+
+Nearly 90% of checklists are less than 10km in length; however, some checklists are as long as 80km in length. Long traveling checklists have lower spatial precision so they should generally be removed prior to analysis.
+
+```{r}
+#| label: ebird-import-distance-sol
+checklists_traveling <- filter(checklists, protocol_type == "Traveling")
+ggplot(checklists_traveling) +
+  aes(x = effort_distance_km) +
+  geom_histogram(binwidth = 5) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::comma) +
+  labs(x = "Distance traveled [km]",
+       y = "# of eBird checklists",
+       title = "Distribution of distance traveled on eBird checklists")
+```
+:::
+
 Next, let's import the observation data.
 
 ```{r}
@@ -106,7 +132,7 @@ tail(checklists_unique$checklist_id)
 ::: callout-tip
 ## Tip
 
-Curious when checklists and observers contributed to a shared checklist after it has been collapsed? The `sampling_event_identifier` and `observer_id` contain comma-separated lists of all checklists and observers that went into the shared checklists.
+Curious what checklists and observers contributed to a shared checklist after it has been collapsed? The `sampling_event_identifier` and `observer_id` contain comma-separated lists of all checklists and observers that went into the shared checklists.
 
 ```{r}
 #| label: ebird-import-shared-tip
