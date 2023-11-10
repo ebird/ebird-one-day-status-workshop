@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ebird.github.io/ebird-workshop-oca/index.html</loc>
-    <lastmod>2023-07-31T21:29:40.001Z</lastmod>
+    <loc>https://ebird.github.io/ebird-one-day-status-workshop/index.html</loc>
+    <lastmod>2023-11-10T15:57:56.372Z</lastmod>
   </url>
   <url>
-    <loc>https://ebird.github.io/ebird-workshop-oca/ebird.html</loc>
-    <lastmod>2023-08-04T21:36:41.121Z</lastmod>
+    <loc>https://ebird.github.io/ebird-one-day-status-workshop/ebirdst.html</loc>
+    <lastmod>2023-11-10T15:57:47.830Z</lastmod>
   </url>
   <url>
-    <loc>https://ebird.github.io/ebird-workshop-oca/ebirdst.html</loc>
-    <lastmod>2023-07-28T17:46:12.714Z</lastmod>
+    <loc>https://ebird.github.io/ebird-one-day-status-workshop/appendix.html</loc>
+    <lastmod>2023-11-10T15:57:23.338Z</lastmod>
   </url>
 </urlset>

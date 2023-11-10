@@ -3,18 +3,18 @@ project:
   output-dir: docs
 
 book:
-  title: "eBird Workshops OCA II"
+  title: "eBird Status Data Products"
   chapters:
     - index.qmd
-    - ebird.qmd
     - ebirdst.qmd
+    - appendix.qmd
   editor:
     mode: source
 
   page-footer:
-    left: "eBird Workshops OCA II"
-  site-url: https://ebird.github.io/ebird-workshop-oca/
-  repo-url: https://github.com/ebird/ebird-workshop-oca/
+    left: "eBird Status Data Products"
+  site-url: https://ebird.github.io/ebird-one-day-status-workshop/
+  repo-url: https://github.com/ebird/ebird-one-day-status-workshop/
   repo-branch: main
   repo-actions: [edit, issue]
 

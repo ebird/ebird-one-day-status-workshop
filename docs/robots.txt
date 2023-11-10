@@ -1,1 +1,1 @@
-Sitemap: https://ebird.github.io/ebird-workshop-oca/sitemap.xml
+Sitemap: https://ebird.github.io/ebird-one-day-status-workshop/sitemap.xml

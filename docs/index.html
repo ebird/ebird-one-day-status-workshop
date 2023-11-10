@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Matthew Strimas-Mackey, Tom Auer">
 
-<title>eBird Workshops OCA II</title>
+<title>eBird Status Data Products</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./ebird.html" rel="next">
+<link href="./ebirdst.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -91,7 +91,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -110,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -122,9 +123,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">eBird Workshops OCA II</a> 
+      <a href="./">eBird Status Data Products</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/ebird/ebird-workshop-oca/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/ebird/ebird-one-day-status-workshop/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
       </div>
@@ -143,14 +144,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ebird.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Best Practices for using eBird Data</span></span></a>
+  <a href="./ebirdst.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">eBird Status Data Products</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ebirdst.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">eBird Status Data Products</span></span></a>
+  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Appendix</span></span></a>
   </div>
 </li>
     </ul>
@@ -169,14 +170,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-intro-tidyverse" id="toc-sec-intro-tidyverse" class="nav-link" data-scroll-target="#sec-intro-tidyverse">Tidyverse</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/ebird/ebird-workshop-oca/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/ebird/ebird-workshop-oca/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/ebird/ebird-one-day-status-workshop/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/ebird/ebird-one-day-status-workshop/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">eBird Workshops OCA II</h1>
+<h1 class="title">eBird Status Data Products</h1>
 </div>
 
 
@@ -193,20 +194,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level1 unnumbered">
 <h1 class="unnumbered">Introduction</h1>
-<p>This website contains the notes for a set of two workshops on best practices for using <a href="https://ebird.org/home">eBird</a> data and <a href="https://science.ebird.org/en/status-and-trends">eBird Status</a> data products, respectively, presented at the <a href="https://oca2023.com.br/evento/oca2023/home">Ornithological Congress of The Americas (OCA)</a> in August 2023 in Gramado, Brazil. The two workshops are:</p>
-<ol type="1">
-<li><a href="./ebird.html">Best Practices for Using eBird Data</a>: introduction to the eBird Basic Dataset (EBD), challenges associated with using eBird data for analysis, and best practices for preparing eBird data for modeling.</li>
-<li><a href="./ebirdst.html">eBird Status and Trends</a>: downloading eBird Status data products, loading the data into R, and using them for a variety of applications.</li>
-</ol>
+<p>The contents of this website comprise the notes for a workshop on best practices for using <a href="https://science.ebird.org/en/status-and-trends">eBird Status</a> data products presented at the Australasian Ornithological Conference 2023 on Friday December 1 in Brisbane, Australia.</p>
+<p>The <a href="./ebirdst.html">eBird Status Data Products</a> materials cover: downloading eBird Status data products, loading the data into R, and using them for a variety of applications.</p>
 <section id="sec-intro-setup" class="level2">
 <h2 class="anchored" data-anchor-id="sec-intro-setup">Setup</h2>
 <p>This workshop is intended to be interactive. All examples are written in the R programming language, and the instructor will work through the examples in real time, while the attendees are encouraged following along by writing the same code. To ensure we can avoid any unnecessary delays, please follow these setup instructions prior to the workshop:</p>
 <ol type="1">
-<li><a href="https://secure.birds.cornell.edu/cassso/account/create">Create an eBird account</a> if you don’t already have one and request access to the raw eBird data and/or the eBird Status data products depending on which workshops you’re attending:
-<ul>
-<li>Best Practices for Using eBird Data: <a href="https://ebird.org/data/download">request access to the eBird Basic Dataset</a>.</li>
-<li>eBird Status and Trends: <a href="https://science.ebird.org/en/status-and-trends/download-data">request access to the eBird Status data products</a></li>
-</ul></li>
+<li><a href="https://secure.birds.cornell.edu/cassso/account/create">Create an eBird account</a> if you don’t already have one and <a href="https://science.ebird.org/en/status-and-trends/download-data">request access to the eBird Status data products</a>.</li>
 <li><a href="https://cloud.r-project.org/">Download</a> and install the latest version of R. <strong>You must have R version 4.0.0 or newer to follow along with this workshop</strong></li>
 <li><a href="https://posit.co/download/rstudio-desktop/#download">Download</a> and install the latest version of RStudio. RStudio is not required for this workshop; however, the instructors will be using it and you may find it easier to following along if you’re working in the same environment.</li>
 <li>The lessons in this workshop use a variety of R packages. To install all the necessary packages, run the following code</li>
@@ -218,12 +212,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"ebird/ebird-best-practices"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="5" type="1">
-<li>Ensure all packages are updated to their most recent versions by clicking on the Update button on the Packages tab in RStudio.</li>
-<li>Download the data package for the workshop you are attending:
-<ul>
-<li><a href="https://drive.google.com/file/d/1y7MXbiqGzwJpyIsDDwA8ErqNVueGgecF/view?usp=sharing">Best Practices for Using eBird Data</a></li>
-<li><a href="https://drive.google.com/file/d/1mXMO2mxqERYkXcneITmuZpmA4Jfj53p3/view?usp=sharing">eBird Status and Trends</a></li>
-</ul></li>
+<li>Ensure all packages are updated to their most recent versions by clicking on the Update button on the Packages tab in RStudio. <!-- TODO update data package download link --></li>
+<li>Download the <a href="https://drive.google.com/file/d/1mXMO2mxqERYkXcneITmuZpmA4Jfj53p3/view?usp=sharing">data package</a> for the workshop.</li>
 </ol>
 </section>
 <section id="sec-intro-tidyverse" class="level2">
@@ -564,15 +554,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./ebird.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Best Practices for using eBird Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./ebirdst.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">eBird Status Data Products</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">eBird Workshops OCA II</div>   
+    <div class="nav-footer-left">eBird Status Data Products</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
