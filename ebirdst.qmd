@@ -52,7 +52,7 @@ ebirdst_download_status("scamyz1", pattern = "abundance_median_27km",
 ```
 :::
 
-## Status and Trends species {#sec-ebirdst-species}
+## Status species {#sec-ebirdst-species}
 
 The `ebirdst_runs` object is a data frame listing all the available species:
 
@@ -117,7 +117,7 @@ However, when working with eBird Status data products after this workshop, it's 
 
 The core of the workshop will work through three example applications using the eBird Status data products as a way to understand practical applications and learn about the data structure and R package:
 
-1.  [Trajectories](#sec-ebirdst-applications-trajectories): chart the change in the percent of the population in a region throughout the year for a set of species.
+1.  [Trajectories](#sec-ebirdst-applications-trajectories): chart the change in the proportion of the population in a region throughout the year for a set of species.
 2.  [Regional statistics](#sec-ebirdst-applications-stats): calculate the proportion of the breeding population falling within protected areas for a set of species.
 3.  [Prioritization](#sec-ebirdst-applications-prioritization): use eBird Status data products to identify important sites for protection of a set of species.
 
@@ -174,7 +174,7 @@ ggplot(trajectories, aes(x = week, y = prop_pop, color = species)) +
   scale_y_continuous(labels = scales::percent) +
   labs(x = "Week", 
        y = "% of population",
-       title = "Weekly % of population trajectory",
+       title = "Weekly proportion of population trajectory",
        color = NULL) +
   theme_bw() +
   theme(legend.position = "bottom")
@@ -197,7 +197,7 @@ species_list <- filter(ebirdst_runs, species_code %in% species_list) %>%
 print(species_list)
 ```
 
-We have five migrants and nine resident species. Notice that `r sum(species_list$quality == 1)` of these species had a quality rating of 1 indicating that caution should be exercised when using the results. For real world use you should examine the relative abundance maps for errors prior to using them for analysis; however, for this example, we'll use this species list as is. We'll load and combine the breeding (for migrants) and resident (for residents) percent of population layers for this list of species. Data for all of these species has been included in the workshop data package.
+We have five migrants and nine resident species. Notice that `r sum(species_list$quality == 1)` of these species had a quality rating of 1 indicating that caution should be exercised when using the results. For real world use you should examine the relative abundance maps for errors prior to using them for analysis; however, for this example, we'll use this species list as is. We'll load and combine the breeding (for migrants) and resident (for residents) proportion of population layers for this list of species. Data for all of these species has been included in the workshop data package.
 
 ::: callout-tip
 ## Tip
@@ -207,8 +207,8 @@ Relative abundance estimates are impacted by detection rates, which can vary bet
 
 ```{r}
 #| label: ebirdst-applications-pop
-# loop over the species list extracting the seasonal percent of population
-percent_population <- list()
+# loop over the species list extracting the seasonal proportion of population
+prop_population <- list()
 for (i in seq_len(nrow(species_list))) {
   # load the seasonal cube for this species
   this_sp <- species_list[i, ]
@@ -219,11 +219,11 @@ for (i in seq_len(nrow(species_list))) {
   
   # subset to the layer we need: breeding or resident
   pop <- pop[[ifelse(this_sp$is_resident, "resident", "breeding")]]
-  percent_population[[this_sp$species_code]] <- pop
+  prop_population[[this_sp$species_code]] <- pop
 }
 
 # stack the rasters into a single object
-percent_population <- rast(percent_population)
+prop_population <- rast(prop_population)
 ```
 
 The GIS data available in the workshop data package contains polygon boundaries for the National Reserve System, subset to Queensland, from the Collaborative Australian Protected Areas Database (CAPAD). Let's load them now and project to match the raster layers. For this example, we'll combine all the protected area polygons together into one feature; however, this analysis could be modified to consider how the distribution of species varies between protected areas.
@@ -233,14 +233,14 @@ The GIS data available in the workshop data package contains polygon boundaries 
 protected <- read_sf("data/capad2022.gpkg") %>% 
   filter(STATE == "QLD") %>%
   st_combine() %>% 
-  st_transform(crs = crs(percent_population))
+  st_transform(crs = crs(prop_population))
 ```
 
 Finally, we can use `exactextracr` to calculate the total percent of population within protected areas for each species.
 
 ```{r}
 #| label: ebirdst-applications-ee
-percent_protected <- exact_extract(percent_population, protected, fun = "sum")
+percent_protected <- exact_extract(prop_population, protected, fun = "sum")
 percent_protected <- as.numeric(percent_protected[1, ])
 percent_protected <- data.frame(species_code = species_list$species_code,
                                 common_name = species_list$common_name,
@@ -267,9 +267,9 @@ For the final application, we'll perform a multi-species site prioritization exe
 
 ```{r}
 #| label: ebirdst-applications-prioritization-import
-# importance: mean percent of population across species
+# importance: mean proportion of population across species
 # fill missing values with zeros prior to averaging
-importance <- ifel(is.na(percent_population), 0, percent_population) %>% 
+importance <- ifel(is.na(prop_population), 0, prop_population) %>% 
   mean(na.rm = TRUE) %>% 
   # using the spatial data from above to crop and mask
   crop(qld) %>% 
@@ -297,7 +297,7 @@ protected_qld <- read_sf("data/capad2022.gpkg") %>%
   filter(STATE %in% c("QLD") & 
            IUCN %in% c("Ia", "Ib", "II", "III", "IV")) %>%
   st_combine() %>% 
-  st_transform(crs = crs(percent_population))
+  st_transform(crs = crs(prop_population))
 
 area_aus_qld_protected <- protected_qld %>%
   st_area()
@@ -337,12 +337,12 @@ plot(st_simplify(protected_proj),
      add = TRUE)
 ```
 
-The high importance sites we identified are shown in green, while the existing protected area network is overlaid in grey. It appears the existing protected area network is doing a better job in northern Queensland than in southeast Queensland for these species. This might not  besurprising since the location of existing protected areas was not chosen specifically to protect these species. Let's quantify what proportion of the population these two regions capture.
+The high importance sites we identified are shown in green, while the existing protected area network is overlaid in grey. It appears the existing protected area network is doing a better job in northern Queensland than in southeast Queensland for these species. This might not be surprising since the location of existing protected areas was not chosen specifically to protect these species. Let's quantify what proportion of the population these two regions capture.
 
 ```{r}
 #| label: ebirdst-applications-prioritization-compare
-# mask the percent of population layers by the selected sites
-selected_pp <- percent_population %>% 
+# mask the proportion of population layers by the selected sites
+selected_pp <- prop_population %>% 
   crop(selected_sites) %>% 
   mask(selected_sites, maskvalues = c(0, NA))
 # calculate total percent of population within proposed sites

@@ -166,7 +166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#sec-ebirdst-access" id="toc-sec-ebirdst-access" class="nav-link active" data-scroll-target="#sec-ebirdst-access"><span class="header-section-number">1.1</span> Data access</a></li>
-  <li><a href="#sec-ebirdst-species" id="toc-sec-ebirdst-species" class="nav-link" data-scroll-target="#sec-ebirdst-species"><span class="header-section-number">1.2</span> Status and Trends species</a></li>
+  <li><a href="#sec-ebirdst-species" id="toc-sec-ebirdst-species" class="nav-link" data-scroll-target="#sec-ebirdst-species"><span class="header-section-number">1.2</span> Status species</a></li>
   <li><a href="#sec-ebirdst-download" id="toc-sec-ebirdst-download" class="nav-link" data-scroll-target="#sec-ebirdst-download"><span class="header-section-number">1.3</span> Downloading data</a></li>
   <li><a href="#sec-ebirdst-applications" id="toc-sec-ebirdst-applications" class="nav-link" data-scroll-target="#sec-ebirdst-applications"><span class="header-section-number">1.4</span> Applications</a>
   <ul class="collapse">
@@ -237,7 +237,7 @@ Checkpoint
 </div>
 </section>
 <section id="sec-ebirdst-species" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="sec-ebirdst-species"><span class="header-section-number">1.2</span> Status and Trends species</h2>
+<h2 data-number="1.2" class="anchored" data-anchor-id="sec-ebirdst-species"><span class="header-section-number">1.2</span> Status species</h2>
 <p>The <code>ebirdst_runs</code> object is a data frame listing all the available species:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(ebirdst_runs)</span>
@@ -332,7 +332,7 @@ Tip
 <h2 data-number="1.4" class="anchored" data-anchor-id="sec-ebirdst-applications"><span class="header-section-number">1.4</span> Applications</h2>
 <p>The core of the workshop will work through three example applications using the eBird Status data products as a way to understand practical applications and learn about the data structure and R package:</p>
 <ol type="1">
-<li><a href="#sec-ebirdst-applications-trajectories">Trajectories</a>: chart the change in the percent of the population in a region throughout the year for a set of species.</li>
+<li><a href="#sec-ebirdst-applications-trajectories">Trajectories</a>: chart the change in the proportion of the population in a region throughout the year for a set of species.</li>
 <li><a href="#sec-ebirdst-applications-stats">Regional statistics</a>: calculate the proportion of the breeding population falling within protected areas for a set of species.</li>
 <li><a href="#sec-ebirdst-applications-prioritization">Prioritization</a>: use eBird Status data products to identify important sites for protection of a set of species.</li>
 </ol>
@@ -387,7 +387,7 @@ Tip
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Week"</span>, </span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"% of population"</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weekly % of population trajectory"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Weekly proportion of population trajectory"</span>,</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -424,7 +424,7 @@ Tip
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 easspi1      Eastern Spinebill   FALSE       3      </span></span>
 <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 6 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We have five migrants and nine resident species. Notice that 1 of these species had a quality rating of 1 indicating that caution should be exercised when using the results. For real world use you should examine the relative abundance maps for errors prior to using them for analysis; however, for this example, we’ll use this species list as is. We’ll load and combine the breeding (for migrants) and resident (for residents) percent of population layers for this list of species. Data for all of these species has been included in the workshop data package.</p>
+<p>We have five migrants and nine resident species. Notice that 1 of these species had a quality rating of 1 indicating that caution should be exercised when using the results. For real world use you should examine the relative abundance maps for errors prior to using them for analysis; however, for this example, we’ll use this species list as is. We’ll load and combine the breeding (for migrants) and resident (for residents) proportion of population layers for this list of species. Data for all of these species has been included in the workshop data package.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -439,8 +439,8 @@ Tip
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loop over the species list extracting the seasonal percent of population</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>percent_population <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loop over the species list extracting the seasonal proportion of population</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>prop_population <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(species_list))) {</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># load the seasonal cube for this species</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  this_sp <span class="ot">&lt;-</span> species_list[i, ]</span>
@@ -451,22 +451,22 @@ Tip
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subset to the layer we need: breeding or resident</span></span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  pop <span class="ot">&lt;-</span> pop[[<span class="fu">ifelse</span>(this_sp<span class="sc">$</span>is_resident, <span class="st">"resident"</span>, <span class="st">"breeding"</span>)]]</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  percent_population[[this_sp<span class="sc">$</span>species_code]] <span class="ot">&lt;-</span> pop</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  prop_population[[this_sp<span class="sc">$</span>species_code]] <span class="ot">&lt;-</span> pop</span>
 <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># stack the rasters into a single object</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>percent_population <span class="ot">&lt;-</span> <span class="fu">rast</span>(percent_population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>prop_population <span class="ot">&lt;-</span> <span class="fu">rast</span>(prop_population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The GIS data available in the workshop data package contains polygon boundaries for the National Reserve System, subset to Queensland, from the Collaborative Australian Protected Areas Database (CAPAD). Let’s load them now and project to match the raster layers. For this example, we’ll combine all the protected area polygons together into one feature; however, this analysis could be modified to consider how the distribution of species varies between protected areas.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>protected <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/capad2022.gpkg"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(STATE <span class="sc">==</span> <span class="st">"QLD"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_combine</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="fu">crs</span>(percent_population))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="fu">crs</span>(prop_population))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, we can use <code>exactextracr</code> to calculate the total percent of population within protected areas for each species.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>percent_protected <span class="ot">&lt;-</span> <span class="fu">exact_extract</span>(percent_population, protected, <span class="at">fun =</span> <span class="st">"sum"</span>)</span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>percent_protected <span class="ot">&lt;-</span> <span class="fu">exact_extract</span>(prop_population, protected, <span class="at">fun =</span> <span class="st">"sum"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>percent_protected <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(percent_protected[<span class="dv">1</span>, ])</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>percent_protected <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">species_code =</span> species_list<span class="sc">$</span>species_code,</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">common_name =</span> species_list<span class="sc">$</span>common_name,</span>
@@ -511,9 +511,9 @@ Tip
 <h3 data-number="1.4.3" class="anchored" data-anchor-id="sec-ebirdst-applications-prioritization"><span class="header-section-number">1.4.3</span> Prioritization</h3>
 <p>For the final application, we’ll perform a multi-species site prioritization exercise, identifying important sites for protecting the set of species we identified in the previous application. Let’s start by generating a multi-species importance layer by calculating the mean percent of population across all selected species. Since we’re focused on identifying sites in Queensland, we’ll also crop and mask the importance layer.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># importance: mean percent of population across species</span></span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># importance: mean proportion of population across species</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># fill missing values with zeros prior to averaging</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">ifel</span>(<span class="fu">is.na</span>(percent_population), <span class="dv">0</span>, percent_population) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">ifel</span>(<span class="fu">is.na</span>(prop_population), <span class="dv">0</span>, prop_population) <span class="sc">%&gt;%</span> </span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># using the spatial data from above to crop and mask</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crop</span>(qld) <span class="sc">%&gt;%</span> </span>
@@ -544,7 +544,7 @@ Tip
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(STATE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"QLD"</span>) <span class="sc">&amp;</span> </span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>           IUCN <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Ia"</span>, <span class="st">"Ib"</span>, <span class="st">"II"</span>, <span class="st">"III"</span>, <span class="st">"IV"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_combine</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="fu">crs</span>(percent_population))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="fu">crs</span>(prop_population))</span>
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>area_aus_qld_protected <span class="ot">&lt;-</span> protected_qld <span class="sc">%&gt;%</span></span>
 <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_area</span>()</span>
@@ -585,10 +585,10 @@ Tip
 </div>
 </div>
 </div>
-<p>The high importance sites we identified are shown in green, while the existing protected area network is overlaid in grey. It appears the existing protected area network is doing a better job in northern Queensland than in southeast Queensland for these species. This might not besurprising since the location of existing protected areas was not chosen specifically to protect these species. Let’s quantify what proportion of the population these two regions capture.</p>
+<p>The high importance sites we identified are shown in green, while the existing protected area network is overlaid in grey. It appears the existing protected area network is doing a better job in northern Queensland than in southeast Queensland for these species. This might not be surprising since the location of existing protected areas was not chosen specifically to protect these species. Let’s quantify what proportion of the population these two regions capture.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mask the percent of population layers by the selected sites</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>selected_pp <span class="ot">&lt;-</span> percent_population <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mask the proportion of population layers by the selected sites</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>selected_pp <span class="ot">&lt;-</span> prop_population <span class="sc">%&gt;%</span> </span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crop</span>(selected_sites) <span class="sc">%&gt;%</span> </span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mask</span>(selected_sites, <span class="at">maskvalues =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>))</span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate total percent of population within proposed sites</span></span>

@@ -166,10 +166,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
   <ul class="collapse">
-  <li><a href="#sec-intro-setup" id="toc-sec-intro-setup" class="nav-link" data-scroll-target="#sec-intro-setup">Setup</a>
-  <ul class="collapse">
+  <li><a href="#sec-intro-setup" id="toc-sec-intro-setup" class="nav-link" data-scroll-target="#sec-intro-setup">Setup</a></li>
   <li><a href="#sec-intro-setup-data" id="toc-sec-intro-setup-data" class="nav-link" data-scroll-target="#sec-intro-setup-data">Data</a></li>
-  </ul></li>
+  <li><a href="#template-r-script" id="toc-template-r-script" class="nav-link" data-scroll-target="#template-r-script">Template R script</a></li>
   <li><a href="#sec-intro-tidyverse" id="toc-sec-intro-tidyverse" class="nav-link" data-scroll-target="#sec-intro-tidyverse">Tidyverse</a></li>
   </ul></li>
   </ul>
@@ -218,8 +217,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="5" type="1">
 <li>Ensure all packages are updated to their most recent versions by clicking on the Update button on the Packages tab in RStudio.</li>
 </ol>
-<section id="sec-intro-setup-data" class="level3">
-<h3 class="anchored" data-anchor-id="sec-intro-setup-data">Data</h3>
+</section>
+<section id="sec-intro-setup-data" class="level2">
+<h2 class="anchored" data-anchor-id="sec-intro-setup-data">Data</h2>
 <p>For those working through the notes on their own, all the required data will be downloaded as needed during the lessons; however, for those attending the workshop, having 30 people attempt to download a large amount of data on the same WiFi connect can pose a problem. With that in mind, attendees will be asked to download data in advance by running the following code:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># download data package</span></span>
@@ -263,6 +263,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(td, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="template-r-script" class="level2">
+<h2 class="anchored" data-anchor-id="template-r-script">Template R script</h2>
+<p>During the workshop we’ll work through the lessons on this website, writing code together in real time; however, it will be useful to have script templates to work from. Open RStudio, then:</p>
+<p>Create a script named “ebird-status.R”, visit <a href="https://raw.githubusercontent.com/ebird/ebirdst-one-day-status-workshop/main/scripts/ebird-status.R">this link</a>, and copy the contents into the script you just created.</p>
 </section>
 <section id="sec-intro-tidyverse" class="level2">
 <h2 class="anchored" data-anchor-id="sec-intro-tidyverse">Tidyverse</h2>
