@@ -79,7 +79,7 @@ where `metric` is typically `median`, except for the relative abundance CIs, whi
 ```{r}
 #| label: ebirdst-load-weekly-abd
 abd_median_hr <- load_raster("Leaden Flycatcher", product = "abundance", 
-                             period = "weekly", resolution = "3km")
+                             period = "weekly", resolution = "9km")
 print(abd_median_hr)
 ```
 
@@ -149,7 +149,7 @@ Finally, as a convenience, the data products include year-round rasters summariz
 ```{r}
 abd_fy_max <- load_raster("Leaden Flycatcher", product = "abundance", 
                           period = "full-year", metric = "max", 
-                          resolution = "3km")
+                          resolution = "9km")
 ```
 
 ## Exploring the raster data {#sec-ebirdst-explore}

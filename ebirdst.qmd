@@ -33,7 +33,7 @@ Access to the eBird Status Data Products is granted through an Access Request Fo
 ```{r}
 #| label: ebirdst-access-key
 #| eval: false
-set_ebirdst_access_key("XXXXXXXXX")
+#set_ebirdst_access_key("XXXXXXXXX")
 ```
 
 Then immediately **restart R**. This will save the access key as the environment variable `EBIRDST_KEY` in your `.Renviron` file so it's accessible within your R session.
@@ -47,7 +47,7 @@ To ensure your data access key is working, attempt run the following code, which
 #| label: ebirdst-access-sol
 #| eval: false
 
-ebirdst_download_status("piecur1", pattern = "abundance_median_27km", 
+ebirdst_download_status("scamyz1", pattern = "abundance_median_27km", 
                         force = TRUE)
 ```
 :::
@@ -72,6 +72,18 @@ The function `ebirdst_download_status()` downloads data for a single species giv
 ebirdst_download_status("Scarlet Myzomela", download_all = TRUE, dry_run = TRUE)
 ```
 
+Within the data package directory, the primary files are organized according to the following structure:
+
+-   `weekly/`: a directory containing weekly estimates of relative abundance and proportion of population on a regular grid in GeoTIFF format at three resolutions. See below for more details.
+-   `seasonal/`: a directory containing seasonal estimates of relative abundance and proportion of population on a regular grid in GeoTIFF format at three resolutions. These are derived from the corresponding weekly raster data. Dates defining the boundary of each season are set on a species-specific basis by an expert reviewer familiar with the species. These dates are available in the `ebirdst_runs` data frame. Only seasons that passed the expert review process are included. See below for more details.
+-   `config.json`: run-specific parameters, mostly for internal use, but also containing useful parameters for mapping the abundance data.
+
+All predictions are made on a standard 2.96km x 2.96km global grid, however, for convenience lower resolution GeoTIFFs are also provided, which are typically much faster to work with. The three resolutions are:
+
+-   High resolution (`3km`): the native 2.96 km resolution data
+-   Medium resolution (`9km`): the high resolution data aggregated by a factor of 3 in each direction resulting in a resolution of 8.89 km
+-   Low resolution (`27km`): the high resolution data aggregated by a factor of 9 in each direction resulting in a resolution of 26.7 km
+
 The `ebirdst_download_status()` function has been designed with a number of parameters that make it easy to choose what specific data products to download. For the sake of speed in the workshop, we're going to use the function default to only download relative abundance and proportion of population. To learn more about downloading additional specific data products, load the help for the function with `?ebirdst::ebirdst_download_status`.
 
 To download the data for Scarlet Myzomela use:
@@ -79,50 +91,26 @@ To download the data for Scarlet Myzomela use:
 ```{r}
 #| label: ebirdst-download-fake
 #| eval: false
-path <- ebirdst_download_status(species = "Scarlet Myzomela")
-path
+ebirdst_download_status(species = "Scarlet Myzomela")
 ```
 
-```{r}
-#| label: ebirdst-download-path
-#| echo: false
-path <- get_species_path("Scarlet Myzomela")
-path
-```
-
-The function will automatically identify a suitable location to store the downloaded data and return that path, which we captured in the variable `path`. We can see which files were downloaded with:
-
-```{r}
-#| label: ebirdst-download-list
-list.files(path, recursive = TRUE)
-```
-
-Within this data package directory, the files are organized according to the following structure:
-
--   `weekly/`: a directory containing weekly estimates of relative abundance and proportion of population on a regular grid in GeoTIFF format at three resolutions. See below for more details.
--   `seasonal/`: a directory containing seasonal estimates of relative abundance and proportion of population on a regular grid in GeoTIFF format at three resolutions. These are derived from the corresponding weekly raster data. Dates defining the boundary of each season are set on a species-specific basis by an expert reviewer familiar with the species. These dates are available in the `ebirdst_runs` data frame. Only seasons that passed the expert review process are included. See below for more details.
--   `config.json`: run-specific parameters, mostly for internal use, but also containing useful parameters for mapping the abundance data.
-
-For a species whose data have already been downloaded, you can use `get_species_path("Scarlet Myzomela")` to identify the path to the data.
+The function will automatically identify a suitable location to store the downloaded data.
 
 ::: callout-tip
 ## Tip
 
-<!-- TODO update #sec-intro-data anchor -->
-
-To avoid any issues resulting from all participants downloading data over a slow internet connection at the same time, for the remainder of this lesson we'll use data included in the [data package for this workshop](index.qmd#sec-intro-data). These data packages should be in the `data/ebirdst-data/` sub-directory of your RStudio project. To find the path to the data for a particular species using a non-standard download location, use
-
-<!-- TODO come back to this one I finalized the species packages -->
-<!-- TODO get_species_path for a local path is not working -->
+To avoid any issues resulting from all participants downloading data over a slow internet connection at the same time, for the remainder of this lesson we'll use data included in the [data package for this workshop](index.qmd#sec-intro-setup-data). To confirm the data are in the correct location, let's load a raster file with the path defined. Note: to keep the file sizes small and the analysis fast, the data package has not included the highest resolution 3km data. If you would like to work with that resolution, you'll need to run the download function for these species on your own.
 
 ```{r}
 #| label: ebirdst-load-path
-#| eval: false
-path <- get_species_path("scamyz1", path = "data/ebirdst-data/2022/")
-path
+test_raster <- load_raster("Scarlet Myzomela", product = "abundance", 
+                           period = "seasonal", path = "data/ebirdst-data", 
+                           resolution = "9km")
+test_raster
+
 ```
 
-However, when working with eBird Status data products after this workshop, it's best to use the standard download location and skip adding `path = "data/ebirdst-data/"`.
+However, when working with eBird Status data products after this workshop, it's best to use the standard download location and skip adding `path = "data/ebirdst-data/"` to function calls.
 :::
 
 ## Applications {#sec-ebirdst-applications}
@@ -143,13 +131,11 @@ Let's start by using the `load_raster()` function to load the weekly proportion 
 #| label: ebirdst-applications-trajectories-data
 # proportion of population cubes
 
-# TODO put this path back , path = "data/ebirdst-data/"
 pop1 <- load_raster("Scarlet Myzomela", product = "proportion-population", 
-                    period = "weekly", resolution = "9km")
+                    period = "weekly", resolution = "9km", path = "data/ebirdst-data/")
 
-# TODO put this path back , path = "data/ebirdst-data/"
 pop2 <- load_raster("Leaden Flycatcher", product = "proportion-population", 
-                    period = "weekly", resolution = "9km")
+                    period = "weekly", resolution = "9km", path = "data/ebirdst-data/")
 
 # Queensland boundary, projected to match the raster data
 qld <- read_sf("data/gis-data.gpkg", "regions") %>% 
@@ -227,11 +213,9 @@ for (i in seq_len(nrow(species_list))) {
   # load the seasonal cube for this species
   this_sp <- species_list[i, ]
   
-  # todo, put path back
-  # , path = "data/ebirdst-data/"
-  
   pop <- load_raster(this_sp$species_code, product = "proportion-population", 
-                     period = "seasonal", resolution = "9km")
+                     period = "seasonal", resolution = "9km", 
+                     path = "data/ebirdst-data/")
   
   # subset to the layer we need: breeding or resident
   pop <- pop[[ifelse(this_sp$is_resident, "resident", "breeding")]]
