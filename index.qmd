@@ -84,7 +84,7 @@ unlink(td, recursive = TRUE)
 
 During the workshop we'll work through the lessons on this website, writing code together in real time; however, it will be useful to have script templates to work from. Open RStudio, then:
 
-Create a script named "ebird-status.R", visit [this link](https://raw.githubusercontent.com/ebird/ebirdst-one-day-status-workshop/main/scripts/ebird-status.R), and copy the contents into the script you just created.
+Create a script named "ebird-status.R", visit [this link](https://raw.githubusercontent.com/ebird/ebird-one-day-status-workshop/main/scripts/ebird-status.R), and copy the contents into the script you just created.
 
 ## Tidyverse {#sec-intro-tidyverse}
 
